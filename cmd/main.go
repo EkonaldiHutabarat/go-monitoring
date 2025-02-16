@@ -1,22 +1,3 @@
-// package main
-
-// import (
-// 	"fmt"
-// 	"log"
-
-// 	"github.com/EkonaldiHutabarat/go-monitoring/config"
-// 	"github.com/EkonaldiHutabarat/go-monitoring/internal/database"
-// )
-
-// func main() {
-// 	config.LoadEnv()
-// 	err := database.InitDB()
-// 	if err != nil {
-// 		log.Fatal("Database connection failed ", err)
-// 	}
-// 	fmt.Println("Server is running...")
-// }
-
 package main
 
 import (
