@@ -19,7 +19,11 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		//Decode json req
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			log.Println("Error decode request", err)
-			http.Error(w, "Invalid request payload", http.StatusBadRequest)
+			//http.Error(w, "Invalid request payload", http.StatusBadRequest)
+			utils.ResponseJSON(w, http.StatusBadRequest, utils.APIResponse{
+				ResponseCode:    http.StatusBadRequest,
+				ResponseMessage: "Invalid request payload",
+			})
 			return
 		}
 
@@ -30,7 +34,8 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		user, err := database.GetUserByEmail(db, req.Email)
 		if err != nil {
 			log.Println("error fetching user", err)
-			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			//http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+
 			return
 		}
 
@@ -39,9 +44,17 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		// Verifikasi password
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 			log.Println("Password tidak cocok")
-			http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			//http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"responseCode":    http.StatusUnauthorized,
+				"responseMessage": "Invalid email or password",
+			})
 			return
+
 		}
+
 		// Generate JWT token
 		token, err := utils.GenerateJWT(user.ID, user.Email)
 		if err != nil {

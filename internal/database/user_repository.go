@@ -29,7 +29,10 @@ func GetUserByEmail(db *sql.DB, email string) (*models.User, error) {
 	err := db.QueryRow(query, email).Scan(&user.ID, &user.Name, &user.Email, &user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errors.New("User not found")
+			//return nil, errors.New("User not found")
+			fmt.Println("error : ", err)
+			log.Printf("User tidak ditemukan dengan email: %s", email)
+
 		}
 		log.Println("Error saat menjalankan query:", err)
 		return nil, err
